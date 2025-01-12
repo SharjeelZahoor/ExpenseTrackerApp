@@ -1,0 +1,80 @@
+
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+<!-- Banner Section Begin -->
+<section class="banner set-bg" data-setbg="{% static 'img/banner/banner.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-7 col-lg-8 m-auto">
+                <div class="banner__slider owl-carousel">
+                    <div class="banner__item">
+                        <div class="banner__text">
+                            <span>Search with different search filters</span>
+                            <h1>Search Mobiles</h1>
+                            <a href="{% url 'search'%}">Search now</a>
+                        </div>
+                    </div>
+                    <div class="banner__item">
+                        <div class="banner__text">
+                            <span>Compare Mobiles</span>
+                            <h1>Mobile Feature Comparisons</h1>
+                            <a href="{% url 'compare'%}">Compare now</a>
+                        </div>
+                    </div>
+                    <div class="banner__item">
+                        <div class="banner__text">
+                            <span>Add to wishlist</span>
+                            <h1>Create your Wishlist</h1>
+                            <a href="{% url 'wishlist'%}">Register and manage wishlist</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Banner Section End -->
+<!-- Product Section Begin -->
+<section class="product spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-4">
+                <div class="section-title">
+                    <h4>Recently Listed</h4>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-8">
+                <ul class="filter__controls">
+                    <li class="active" data-filter="*">All</li>
+                    {% for rec in brands%}
+                    <li data-filter=".brand{{rec.id}}">{{rec.name}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="row property__gallery">
+            {% for rec in records %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mix brand{{rec.brand.id}}">
+                <div class="product__item">
+                    <div class="product__item__pic set-bg" data-setbg="{% static 'images/' %}{{rec.photo}}">
+                        <ul class="product__hover">
+                            <li><a href="{% static 'images/' %}{{rec.photo}}" class="image-popup"><span class="arrow_expand"></span></a></li>
+                            {% if userType == 'USER'%}
+                                <li><a href="{% url 'add-to-wishlist' rec.id%}"><span class="icon_heart_alt"></span></a></li>
+                            {% endif %}
+                            <li><a href="{% url 'product' rec.id %}"><span class="icon_info_alt"></span></a></li>
+                        </ul>
+                    </div>
+                    <div class="product__item__text">
+                        <h6><a href="#">{{rec.model}}</a></h6>
+                        <div class="product__price">{{rec.brand.name}}</div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<!-- Product Section End -->
+{% endblock %}

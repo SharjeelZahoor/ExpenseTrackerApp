@@ -1,0 +1,193 @@
+
+    
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+    <!-- Breadcrumb Begin -->
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="{% url 'home'%}"><i class="fa fa-home"></i> Home</a>
+                        <a href="{% url 'products'%}"><i class="fa fa-arrow"></i> Products</a>
+                        <span>{% if sub_page %} {{sub_page}} {% else %} Product {% endif %}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+    <!-- Product Details Section Begin -->
+    <section class="product-details spad">
+        <div class="container">
+            {% if record %}
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="product__details__pic">
+                        <div class="product__details__pic__left product__thumb nice-scroll">
+                            <a class="pt active" href="#product-0">
+                                <img src="{% static 'images/' %}{{record.photo}}" alt="">
+                            </a>
+                            {% for rec in photos %}
+                            <a class="pt" href="#product-{{rec.id}}">
+                                <img src="{% static 'images/' %}{{rec.photo}}" alt="">
+                            </a>
+                            {% endfor %}
+                        </div>
+                        <div class="product__details__slider__content">
+                            <div class="product__details__pic__slider owl-carousel">
+                                <a href="{% static 'images/' %}{{record.photo}}" class="image-popup">
+									<img data-hash="product-0" class="product__big__img" src="{% static 'images/' %}{{record.photo}}" alt="">
+								</a>
+                                {% for rec in photos %}
+								<a href="{% static 'images/' %}{{rec.photo}}" class="image-popup">
+                                <img data-hash="product-{{rec.id}}" class="product__big__img image-popup" src="{% static 'images/' %}{{rec.photo}}" alt="">
+								</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="product__details__text">
+                        <h3>{{record.model}}<span>Brand: {{record.brand.name}}</span></h3>
+                        <!-- <div class="rating">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <span>( 0 reviews )</span>
+                        </div> -->
+                        <div class="product__details__price">Rs. {{record.price}} </div>
+                        <p>
+                            OS : <b>{{record.os}}</b><br>
+                            Colors : <b>{{record.colors}}</b><br>
+                            Weight : <b>{{record.weight}} gms</b><br>
+                            Announced Date : <b>{{record.announcedDate}}</b><br>
+                            Launch Date : <b>{{record.launchDate}}</b><br>
+                            Screen Dimension H x W  ({{record.dimentionUnit}}) : <b>{{record.screenHeight}} x {{record.screenWidth}}</b><br>
+                            Product Dimension H x W x L  ({{record.dimentionUnit}}) : <b>{{record.height}} x {{record.width}} x {{record.length}}</b><br>
+
+                        </p>
+                        <div class="product__details__button">
+                            {% if userType == 'ADMIN'%}
+                            <a href="{% url 'add-mobile-photo' record.id %}" class="cart-btn"><span class="icon_upload"></span> Upload Photo</a>
+                            {% endif %}
+                            {% if userType == 'USER'%}
+                            <ul>
+                                <li><a href="{% url 'add-to-wishlist' record.id%}"><span class="icon_heart_alt"></span></a></li>
+                            </ul>
+                            {% endif %}
+                        </div>
+                        <div class="product__details__widget">
+                            <ul>
+                                <li>
+                                    <span>RAM:</span>
+                                    <p>{{record.ram}}{{record.ramUnit}}</p>
+                                </li>                               
+                                <li>
+                                    <span>ROM:</span>
+                                    <p>{{record.rom}}{{record.romUnit}}</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="product__details__tab">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">Specification</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">Description</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">Reviews</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                                <h6>Specification</h6>
+                                <p>                                                                    
+                                    <b>Wifi : </b>  {{record.wifi}} {{record.wifiVersion}} <br>
+                                    <b>Bluetooth : </b>  {{record.bluetooth}} {{record.btVersion}} <br>
+                                    <b>FM Radio : </b>  {{record.fm}} <br>
+                                    <b>Camera</b><br>
+                                    <b>Front Camera(s) : </b>  {{record.frontCams}}  (Flash : {{record.fCamFlash}})<br>
+                                    {% if record.frontCams >= 1 %}
+                                    <b>Front Camera 1 Resolution : </b>  {{record.fCam1Res}}  MP<br>
+                                    {% endif %}
+                                    {% if record.frontCams >= 2 %}
+                                    <b>Front Camera 2 Resolution : </b>  {{record.fCam2Res}}  MP<br>
+                                    {% endif %}
+                                    {% if record.frontCams >= 3 %}
+                                    <b>Front Camera 3 Resolution : </b>  {{record.fCam3Res}}  MP<br>
+                                    {% endif %}
+                                    <br>
+                                    <b>Back Camera(s) : </b>  {{record.backCams}} ( Flash : {{record.bCamFlash}}) <br>
+                                    {% if record.backCams >= 1 %}
+                                    <b>Back Camera 1 Resolution : </b>  {{record.bCam1Res}}  MP<br>
+                                    {% endif %}
+                                    {% if record.backCams >= 2 %}
+                                    <b>Back Camera 2 Resolution : </b>  {{record.bCam2Res}}  MP<br>
+                                    {% endif %}
+                                    {% if record.backCams >= 3 %}
+                                    <b>Back Camera 3 Resolution : </b>  {{record.bCam3Res}}  MP<br>
+                                    {% endif %}
+                                    {% if record.backCams >= 4 %}
+                                    <b>Back Camera 4 Resolution : </b>  {{record.bCam4Res}}  MP<br>
+                                    {% endif %}
+                                    <b>Network</b><br>
+                                    <b>Sims : </b>  {{record.sims}} <br>
+                                    {% if record.sims >= 1 %}
+                                    <b>Network Sim 1 : </b>  {{record.sim1Network}} <br>
+                                    {% endif %}
+                                    {% if record.sims >= 2 %}
+                                    <b>Network Sim 2 : </b>  {{record.sim2Network}} <br>
+                                    {% endif %}
+                                    {% if record.sims >= 3 %}
+                                    <b>Network Sim 3 : </b>  {{record.sim3Network}} <br>
+                                    {% endif %}
+                                    {% if record.sims >= 4 %}
+                                    <b>Network Sim 4 : </b>  {{record.sim4Network}} <br>
+                                    {% endif %}
+                                    <b>Battery</b><br>
+                                    <b>Battery </b>  {{record.battery}} mAH <br>
+                                </p>
+                            </div>
+                            <div class="tab-pane" id="tabs-2" role="tabpanel">
+                                <h6>Description</h6>
+                                <p>
+                                    {{record.description|linebreaks}}
+                                </p>
+                            </div>
+                            <div class="tab-pane" id="tabs-3" role="tabpanel">
+                                <h6>Reviews </h6>
+                                {% for rec in reviews %}
+                                <p>
+                                    {{rec.msg|linebreaks}} ( by <b>{{rec.user.name}}</b>)
+                                </p>
+                                {% endfor %}
+                                <div class="contact__form">
+                                    <form action="{% url 'add-review' %}" method="post">   
+                                        {%csrf_token%}
+                                        Review :
+                                        <input type="hidden" name="prodId" id="prodId" value="{{record.id}}">
+                                        <textarea name="msg" id="msg" required></textarea>
+                                        <button type="submit" class="site-btn" {% if userType == 'ADMIN'%}disabled style="background-color: grey;"{% endif %}>Save</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+    <!-- Product Details Section End -->
+
+    {% endblock %}
