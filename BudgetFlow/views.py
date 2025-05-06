@@ -37,7 +37,7 @@ def home(request):
     # Current Month & Year
     today = date.today()
     current_month_budgets = budgets.filter(month=today.month, year=today.year)
-
+    spent=0
     budget_progress = []
     for budget in current_month_budgets:
         spent = Transaction.objects.filter(
@@ -69,7 +69,7 @@ def home(request):
         })
 
     # Fetch unread alerts
-    alerts = Alert.objects.filter(user=user, is_read=False)
+    alerts = Alert.objects.filter(user=user)
 
     context = {
         'page': page,
@@ -273,10 +273,65 @@ def report(request):
 
 
 # ✅ List all transactions
+
 @login_required
 def transaction_list(request):
-    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
-    return render(request, 'BudgetFlow/transaction_list.html', {'transactions': transactions})
+    transactions = Transaction.objects.filter(user=request.user)
+    categories = Category.objects.all()
+
+    # Get filters from GET params
+    keyword = request.GET.get('keyword', '').strip()
+    category_id = request.GET.get('category_id')
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+    amount_min = request.GET.get('amount_min')
+    amount_max = request.GET.get('amount_max')
+    sort_by = request.GET.get('sort_by', 'date_desc')
+
+    # Apply keyword filter
+    if keyword:
+        transactions = transactions.filter(Q(description__icontains=keyword))
+
+    # Apply category filter
+    if category_id:
+        transactions = transactions.filter(category_id=category_id)
+
+    # Apply date range filter
+    if date_from:
+        transactions = transactions.filter(date__gte=date_from)
+    if date_to:
+        transactions = transactions.filter(date__lte=date_to)
+
+    # Apply amount range filter
+    if amount_min:
+        transactions = transactions.filter(amount__gte=amount_min)
+    if amount_max:
+        transactions = transactions.filter(amount__lte=amount_max)
+
+    # Sorting
+    if sort_by == 'date_asc':
+        transactions = transactions.order_by('date')
+    elif sort_by == 'amount_asc':
+        transactions = transactions.order_by('amount')
+    elif sort_by == 'amount_desc':
+        transactions = transactions.order_by('-amount')
+    else:  # default
+        transactions = transactions.order_by('-date')
+
+    context = {
+        'transactions': transactions,
+        'categories': categories,
+        'selected_category_id': category_id,
+        'current_sort': sort_by,
+        'keyword': keyword,
+        'date_from': date_from,
+        'date_to': date_to,
+        'amount_min': amount_min,
+        'amount_max': amount_max,
+    }
+
+    return render(request, 'BudgetFlow/transaction_list.html', context)
+
 
 # ✅ Create a transaction
 @login_required
@@ -306,6 +361,7 @@ def transaction_update(request, pk):
     else:
         form = EditTransactionForm(instance=transaction)
     return render(request, 'BudgetFlow/transaction_form.html', {'form': form, 'title': 'Edit Transaction'})
+
 
 # ✅ Delete a transaction
 @login_required

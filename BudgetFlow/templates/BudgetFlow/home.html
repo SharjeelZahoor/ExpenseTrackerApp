@@ -31,11 +31,13 @@
           </div>
         </div>
       </div>
-    </div># Montly Budget warning and alerts
+    </div>
+
     <h4 class="mt-4">Monthly Budget Progress</h4>
     {% for bp in budget_progress %}
-      <div class="mb-3">
-        <strong>{{ bp.category }}</strong>: Rs. {{ bp.spent }} of Rs. {{ bp.amount }} ({{ bp.percent_used }}%)<div class="progress">
+      <div class="mb-3" style="padding: 10px;">
+        <strong>{{ bp.category }}</strong>: Rs. {{ bp.spent }} of Rs. {{ bp.amount }} ({{ bp.percent_used }}%)
+        <div class="progress">
           <div class="progress-bar 
           {% if bp.percent_used >= 100 %}
               
@@ -55,14 +57,21 @@
             bg-success
 
 
-            {% endif %}"
+            {% endif %}
             role="progressbar"
             style="width: {{ bp.percent_used }}%;"
-            aria-valuenow="{{ bp.percent_used }}"
+            aria-valuenow="{{ bp.percent_used }}
             aria-valuemin="0"
             aria-valuemax="100">{{ bp.percent_used }}%</div>
         </div>
       </div>
+      {% if bp.percent_used >= 100 %}
+      <h2 style="padding: 20px; color: black; background-color:#ffcccb;">Stop! Budget Exhausted</h2>
+      
+      {% elif bp.percent_used >= 80 %}
+      <h2 style="padding: 20px; color: black; background-color:#ffffe0;">Warning: 80% Budget Used</h2>
+      
+      {% endif %}
     {% empty %}
       <p>No budgets set for this month.</p>
     {% endfor %}
