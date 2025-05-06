@@ -1,0 +1,140 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option py-3 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a href="{% url 'home' %}"><i class="fa fa-home"></i> Home</a>
+                    <span>Reports</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Report Section Begin -->
+<section class="report-section spad">
+    <div class="container">
+        <h3 class="mb-4">Financial Reports</h3>
+
+        <!-- Monthly Report -->
+        <div class="report-box mb-4">
+            <h5>Monthly Spending Overview</h5>
+            <div class="report-chart">
+                <canvas id="monthlyChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Category-wise Spending -->
+        <div class="report-box mb-4">
+            <h5>Category-wise Spending Breakdown</h5>
+            <div class="report-chart">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Income vs Expenses -->
+        <div class="report-box mb-4">
+            <h5>Income vs Expenses</h5>
+            <div class="report-chart">
+                <canvas id="incomeExpenseChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Budget Comparison -->
+        <div class="report-box">
+            <h5>Budget vs Actual Spending</h5>
+            <div class="report-chart">
+                <canvas id="budgetComparisonChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+</section>
+<!-- Report Section End -->
+
+<!-- JavaScript for Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Example data for charts - replace with dynamic data from your views
+    const monthlyData = [3000, 5000, 4000, 6000, 3500, 4500, 5200, 4900, 6000, 7000, 6500, 7200];
+    const categoryData = [2000, 1500, 1000, 1800, 1200];
+    const categories = ['Food', 'Transport', 'Entertainment', 'Utilities', 'Others'];
+    const income = 50000;
+    const expenses = 42000;
+    const budgetData = [15000, 15000, 15000, 15000];  // Example budgets for categories
+
+    // Monthly Spending Chart
+    const monthlyChart = new Chart(document.getElementById('monthlyChart'), {
+        type: 'line',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            datasets: [{
+                label: 'Monthly Expenses',
+                data: monthlyData,
+                borderColor: 'rgb(255, 99, 132)',
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
+    // Category-wise Spending Breakdown
+    const categoryChart = new Chart(document.getElementById('categoryChart'), {
+        type: 'pie',
+        data: {
+            labels: categories,
+            datasets: [{
+                label: 'Category Spending',
+                data: categoryData,
+                backgroundColor: ['#FFB6B6', '#FFCC99', '#66B2FF', '#99FF99', '#FFFF99']
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
+    // Income vs Expenses Chart
+    const incomeExpenseChart = new Chart(document.getElementById('incomeExpenseChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Income', 'Expenses'],
+            datasets: [{
+                label: 'Income vs Expenses',
+                data: [income, expenses],
+                backgroundColor: ['#28a745', '#dc3545']
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
+    // Budget Comparison Chart
+    const budgetComparisonChart = new Chart(document.getElementById('budgetComparisonChart'), {
+        type: 'bar',
+        data: {
+            labels: categories,
+            datasets: [{
+                label: 'Budget vs Actual Spending',
+                data: budgetData,
+                backgroundColor: '#FFC107',
+                borderColor: '#FF9800',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+</script>
+
+{% endblock %}

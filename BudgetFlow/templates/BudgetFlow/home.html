@@ -1,0 +1,114 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="container mt-5">
+    <h2 class="mb-4">Dashboard</h2>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+      <div class="col-md-4 mb-3">
+        <div class="card text-white bg-success shadow">
+          <div class="card-body">
+            <h5 class="card-title">Total Income</h5>
+            <p class="card-text">PKR {{ income }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="card text-white bg-danger shadow">
+          <div class="card-body">
+            <h5 class="card-title">Total Expenses</h5>
+            <p class="card-text">PKR {{ expense }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-3">
+        <div class="card text-white bg-info shadow">
+          <div class="card-body">
+            <h5 class="card-title">Balance</h5>
+            <p class="card-text">PKR {{ balance }}</p>
+          </div>
+        </div>
+      </div>
+    </div># Montly Budget warning and alerts
+    <h4 class="mt-4">Monthly Budget Progress</h4>
+    {% for bp in budget_progress %}
+      <div class="mb-3">
+        <strong>{{ bp.category }}</strong>: Rs. {{ bp.spent }} of Rs. {{ bp.amount }} ({{ bp.percent_used }}%)<div class="progress">
+          <div class="progress-bar 
+          {% if bp.percent_used >= 100 %}
+              
+              
+            bg-danger
+
+
+            {% elif bp.percent_used >= 80 %}
+              
+              
+            bg-warning
+
+
+            {% else %}
+              
+              
+            bg-success
+
+
+            {% endif %}"
+            role="progressbar"
+            style="width: {{ bp.percent_used }}%;"
+            aria-valuenow="{{ bp.percent_used }}"
+            aria-valuemin="0"
+            aria-valuemax="100">{{ bp.percent_used }}%</div>
+        </div>
+      </div>
+    {% empty %}
+      <p>No budgets set for this month.</p>
+    {% endfor %}
+
+    <!-- Recent Transactions -->
+    <h4 class="mt-4">Recent Transactions</h4>
+    <ul class="list-group mb-4">
+      {% for tx in transactions %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            {{ tx.date }} - <strong>{{ tx.category.name }}</strong> ({{ tx.type }})
+          </div>
+          <span class="badge bg-primary rounded-pill">PKR {{ tx.amount }}</span>
+        </li>
+      {% empty %}
+        <li class="list-group-item text-muted">No transactions found.</li>
+      {% endfor %}
+    </ul>
+
+    <!-- Monthly Budgets -->
+    <h4>This Month's Budgets</h4>
+    <ul class="list-group mb-4">
+      {% for b in budgets %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>{{ b.category.name }}</span>
+          <span class="badge bg-warning text-dark rounded-pill">PKR {{ b.amount }}</span>
+        </li>
+      {% empty %}
+        <li class="list-group-item text-muted">No budget set for this month.</li>
+      {% endfor %}
+    </ul>
+
+    <!-- Alerts -->
+    <h4>Unread Alerts</h4>
+<ul class="list-group mb-5">
+  {% for alert in alerts %}
+    <li class="list-group-item list-group-item-warning d-flex justify-content-between align-items-center">
+      {{ alert.message }}
+      <div>
+        <a href="{% url 'mark_alert_as_read' alert.id %}" class="btn btn-sm btn-outline-success me-1">Mark as Read</a>
+        <a href="{% url 'delete_alert' alert.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+      </div>
+    </li>
+  {% empty %}
+    <li class="list-group-item text-muted">No new alerts.</li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'main.html' %}
+
+{% block content %}
+  <div class="container mt-5">
+    <h2>My Alerts</h2>
+    {% if alerts %}
+      <ul class="list-group mb-4">
+        {% for alert in alerts %}
+          <li class="list-group-item d-flex justify-content-between align-items-center 
+                      {% if not alert.is_read %}list-group-item-warning{% endif %}">
+            <div>
+              {{ alert.message }}<br>
+              <small class="text-muted">{{ alert.created_at|date:"M d, Y H:i" }}</small>
+            </div>
+            <div>
+              {% if alert.is_read %}
+                <a href="{% url 'mark_alert_as_unread' alert.id %}" class="btn btn-sm btn-outline-warning me-1">Mark as Unread</a>
+              {% else %}
+                <a href="{% url 'mark_alert_as_read' alert.id %}" class="btn btn-sm btn-outline-success me-1">Mark as Read</a>
+              {% endif %}
+              <a href="{% url 'delete_alert' alert.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted">You have no alerts at the moment.</p>
+    {% endif %}
+  </div>
+{% endblock %}

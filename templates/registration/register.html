@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Register</title>
+    <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f9fafb;
+      color: #333;
+    }
+    .container {
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+    form {
+      background: white;
+      padding: 32px 36px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+      width: 100%;
+      max-width: 500px;
+      box-sizing: border-box;
+    }
+    .login-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #10B981;
+      text-align: center;
+      margin-bottom: 28px;
+      user-select: none;
+    }
+    form p {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+    }
+    label {
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #10B981;
+    }
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+      font-size: 1rem;
+      padding: 10px 14px;
+      border: 1.5px solid #10B981;
+      border-radius: 6px;
+      outline-offset: 2px;
+      transition: border-color 0.3s ease;
+    }
+    input:focus {
+      border-color: #10B981;
+      outline-color: #10B981;
+    }
+    .errorlist {
+      color: red;
+      font-size: 0.9rem;
+      margin-top: -10px;
+      margin-bottom: 10px;
+    }
+    button[type="submit"] {
+      background-color: #10B981;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 14px 0;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+    button[type="submit"]:hover {
+      background-color: #0c815d;
+    }
+    .register-prompt {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: #555;
+    }
+    .register-prompt a {
+      color: #10B981;
+      font-weight: 600;
+      text-decoration: none;
+      margin-left: 6px;
+    }
+    .register-prompt a:hover {
+      color: #0c815d;
+      text-decoration: underline;
+    }
+    @media (max-width: 400px) {
+      form {
+        padding: 24px 20px;
+      }
+    }
+  </style>
+  </head>
+  <body>
+    <div class="container">
+      <form action="" method="post" novalidate>
+        <div class="login-title">Register</div>
+        {% csrf_token %}
+
+        <p>
+          <label for="id_username">Username</label>
+          {{ form.username }}
+          {% if form.username.errors %}
+            <div class="errorlist">
+              {% for error in form.username.errors %}
+                <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </p>
+
+        <p>
+          <label for="id_email">Email</label>
+          {{ form.email }}
+          {% if form.email.errors %}
+            <div class="errorlist">
+              {% for error in form.email.errors %}
+                <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </p>
+
+        <p>
+          <label for="id_password1">Password</label>
+          {{ form.password1 }}
+          {% if form.password1.errors %}
+            <div class="errorlist">
+              {% for error in form.password1.errors %}
+                <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </p>
+
+        <p>
+          <label for="id_password2">Confirm Password</label>
+          {{ form.password2 }}
+          {% if form.password2.errors %}
+            <div class="errorlist">
+              {% for error in form.password2.errors %}
+                <p>{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </p>
+
+        {% if form.non_field_errors %}
+          <div class="errorlist">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        {% if messages %}
+          <div class="messages" style="color: red; padding: 5px;">
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <button type="submit">Register</button>
+
+        <div class="register-prompt">
+          Already have an account?
+          <a href="{% url 'login' %}">Login here</a>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

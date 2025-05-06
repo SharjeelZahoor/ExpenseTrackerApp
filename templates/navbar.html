@@ -1,7 +1,7 @@
 {% load static %}
-  <li class="{% if page == 'Home' %} active {% endif %}"><a href="{% url 'home' %}">Home</a></li>
-  <li class="{% if page == 'Products'%}active{% endif %}"><a href="{% url 'products' %}">Products</a></li>
-  <li class="{% if page == 'Brands'%}active{% endif %}"><a href="{% url 'brands' %}">Brands</a></li>
-  <li class="{% if page == 'Search'%}active{% endif %}"><a href="{% url 'search' %}">Search</a></li>
-  <li class="{% if page == 'Compare'%}active{% endif %}"><a href="{% url 'compare' %}">Compare</a></li>
-  <li class="{% if page == 'Wishlist'%}active{% endif %}"><a href="{% url 'wishlist' %}">Wishlist</a></li>
+<li class="{% if page == 'Dashboard' %}active{% endif %}"><a href="{% url 'home' %}">Dashboard</a></li>
+<li class="{% if page == 'Transactions' %}active{% endif %}"><a href="{% url 'transaction_list' %}">Transactions</a></li>
+<li class="{% if page == 'Categories' %}active{% endif %}"><a href="{% url 'category_list' %}">Categories</a></li>
+<li class="{% if page == 'Budgets' %}active{% endif %}"><a href="{% url 'budget_list' %}">Budgets</a></li>
+<li class="{% if page == 'Search' %}active{% endif %}"><a href="{% url 'search' %}">Search</a></li>
+<li class="{% if page == 'Alerts' %}active{% endif %}"><a href="{% url 'alerts' %}">Alerts</a></li>

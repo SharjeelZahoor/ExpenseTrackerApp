@@ -1,0 +1,40 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option py-3 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a href="{% url 'home' %}"><i class="fa fa-home"></i> Home</a>
+                    <span>Edit Category</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Edit Category Form Begin -->
+<section class="category-form spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mx-auto">
+                <h4 class="mb-4">Edit Category</h4>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="category_name">Category Name</label>
+                        <input type="text" name="name" id="category_name" class="form-control" value="{{ category.name }}" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Category</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Edit Category Form End -->
+
+{% endblock %}
