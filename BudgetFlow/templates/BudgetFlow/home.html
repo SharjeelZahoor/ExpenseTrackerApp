@@ -5,35 +5,107 @@
   <div class="container mt-5">
     <h2 class="mb-4">Dashboard</h2>
 
-    <!-- Summary Cards -->
-    <div class="row mb-4">
-      <div class="col-md-4 mb-3">
-        <div class="card text-white bg-success shadow">
-          <div class="card-body">
-            <h5 class="card-title">Total Income</h5>
-            <p class="card-text">PKR {{ income }}</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4 mb-3">
-        <div class="card text-white bg-danger shadow">
-          <div class="card-body">
-            <h5 class="card-title">Total Expenses</h5>
-            <p class="card-text">PKR {{ expense }}</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4 mb-3">
-        <div class="card text-white bg-info shadow">
-          <div class="card-body">
-            <h5 class="card-title">Balance</h5>
-            <p class="card-text">PKR {{ balance }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <h4 class="mt-4">Monthly Budget Progress</h4>
+<div style="
+  display: flex; 
+  gap: 20px; 
+  justify-content: center; 
+  margin: 20px; 
+  flex-wrap: wrap;
+">
+  <div style="
+    flex: 1 1 280px; 
+    max-width: 300px;
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 24px 32px;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    cursor: default;
+    transition: transform 0.3s, box-shadow 0.3s;
+  "
+  onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.2)';"
+  onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)';"
+  >
+    <h5 style="margin-bottom: 12px; color:white; font-size: 1.4rem; letter-spacing: 1.2px; text-transform: uppercase;">
+      Total Income of THIS Month
+    </h5>
+    <p style="font-size: 1.8rem; color:white; font-weight: 800; margin: 0;">
+      <span style="color: #ffe066;">PKR</span>{{ income }}
+    </p>
+  </div>
+
+  <div style="
+    flex: 1 1 280px; 
+    max-width: 300px;
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 24px 32px;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    cursor: default;
+    transition: transform 0.3s, box-shadow 0.3s;
+  "
+  onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.2)';"
+  onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)';"
+  >
+    <h5 style="margin-bottom: 12px; color:white; font-size: 1.4rem; letter-spacing: 1.2px; text-transform: uppercase;">
+      Total Expenses of This Month
+    </h5>
+    <p style="font-size: 1.8rem; color:white; font-weight: 800; margin: 0;">
+     <span style="color: #ffe066;">PKR</span>{{ expense }}
+    </p>
+  </div>
+
+  <div style="
+    flex: 1 1 280px; 
+    max-width: 300px;
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 24px 32px;
+    padding-top: 50px;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    cursor: default;
+    transition: transform 0.3s, box-shadow 0.3s;
+  "
+  onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.2)';"
+  onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)';"
+  >
+    <h5 style="margin-bottom: 12px; color:white; font-size: 1.4rem; letter-spacing: 1.2px; text-transform: uppercase;">
+      Balance
+    </h5>
+    <p style="font-size: 1.8rem; color:white; font-weight: 800; margin: 0;">
+      <span style="color: #ffe066;">PKR</span>{{ balance }}
+    </p>
+  </div>
+</div>
+
+
+  <div style="text-align: center;">
+    <h4 style="
+      margin-top: 1.5rem; /* approximate mt-4 spacing */
+      color: #2f7a2f;
+      padding: 8px 16px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-weight: 800;
+      font-size: 1.75rem;
+      letter-spacing: 0.8px;
+      user-select: none;
+      display: inline-block;
+    ">
+      Monthly Budget Progress
+    </h4>
+  </div>
     {% for bp in budget_progress %}
       <div class="mb-3" style="padding: 10px;">
         <strong>{{ bp.category }}</strong>: Rs. {{ bp.spent }} of Rs. {{ bp.amount }} ({{ bp.percent_used }}%)
@@ -65,19 +137,63 @@
             aria-valuemax="100">{{ bp.percent_used }}%</div>
         </div>
       </div>
-      {% if bp.percent_used >= 100 %}
-      <h2 style="padding: 20px; color: black; background-color:#ffcccb;">Stop! Budget Exhausted</h2>
-      
-      {% elif bp.percent_used >= 80 %}
-      <h2 style="padding: 20px; color: black; background-color:#ffffe0;">Warning: 80% Budget Used</h2>
-      
-      {% endif %}
+{% if bp.percent_used >= 100 %}
+  <h2 style="
+    max-width: 320px;
+    margin: 20px auto;
+    padding: 30px 20px;
+    color: #000000;
+    background-color: #ffcccb;
+    border-radius: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(255, 99, 71, 0.3);
+    user-select: none;
+  ">
+    Stop! Budget Exhausted
+  </h2>
+  {% elif bp.percent_used >= 80 %}
+  <h2 style="
+    max-width: 320px;
+    margin: 20px auto;
+    padding: 30px 20px;
+    color: #000000;
+    background-color: #ffffe0;
+    border-radius: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(255, 223, 86, 0.3);
+    user-select: none;
+  ">
+    Warning: 80% Budget Used
+  </h2>
+{% endif %}
+
     {% empty %}
       <p>No budgets set for this month.</p>
     {% endfor %}
 
     <!-- Recent Transactions -->
-    <h4 class="mt-4">Recent Transactions</h4>
+      <div style="text-align: center;">
+    <h4 style="
+      margin-top: 1.5rem; /* approximate mt-4 spacing */
+      margin-bottom: 0.5rem;
+      color: #2f7a2f;
+      padding: 8px 16px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-weight: 800;
+      font-size: 1.75rem;
+      letter-spacing: 0.8px;
+      user-select: none;
+      display: inline-block;
+    ">
+      Recent Transactions
+    </h4>
+  </div>
     <ul class="list-group mb-4">
       {% for tx in transactions %}
         <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -92,7 +208,22 @@
     </ul>
 
     <!-- Monthly Budgets -->
-    <h4>This Month's Budgets</h4>
+      <div style="text-align: center;">
+    <h4 style="
+      margin-top: 1.5rem; /* approximate mt-4 spacing */
+      margin-bottom: 0.5rem;
+      color: #2f7a2f;
+      padding: 8px 16px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-weight: 800;
+      font-size: 1.75rem;
+      letter-spacing: 0.8px;
+      user-select: none;
+      display: inline-block;
+    ">
+      This Month Budget
+    </h4>
+  </div>
     <ul class="list-group mb-4">
       {% for b in budgets %}
         <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -104,20 +235,93 @@
       {% endfor %}
     </ul>
 
-    <!-- Alerts -->
-    <h4>Unread Alerts</h4>
-<ul class="list-group mb-5">
-  {% for alert in alerts %}
-    <li class="list-group-item list-group-item-warning d-flex justify-content-between align-items-center">
-      {{ alert.message }}
-      <div>
-        <a href="{% url 'mark_alert_as_read' alert.id %}" class="btn btn-sm btn-outline-success me-1">Mark as Read</a>
-        <a href="{% url 'delete_alert' alert.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
-      </div>
-    </li>
-  {% empty %}
-    <li class="list-group-item text-muted">No new alerts.</li>
-  {% endfor %}
-</ul>
+  <!-- Alerts Heading -->
+  <div style="text-align: center;">
+    <h4 style="
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: #2f7a2f;
+      padding: 8px 16px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-weight: 800;
+      font-size: 1.75rem;
+      letter-spacing: 0.8px;
+      user-select: none;
+      display: inline-block;
+    ">
+      My Alerts
+    </h4>
+  </div>
 
+  <!-- Alerts Grid -->
+  <div class="container my-5">
+    <div class="row g-4">
+      {% if alerts %}
+        {% for alert in alerts %}
+          <div class="col-12 col-md-6 col-lg-4 d-flex">
+            <div style="
+              border: 2px solid {% if not alert.is_read %}#ffc107{% else %}#dee2e6{% endif %};
+              border-radius: 12px;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+              background: #fff;
+              transition: background-color 0.3s ease, box-shadow 0.3s ease;
+              width: 100%;
+            "
+            onmouseover="this.style.backgroundColor='#f8f9fa'; this.style.boxShadow='0 6px 16px rgba(0, 0, 0, 0.1)'"
+            onmouseout="this.style.backgroundColor='#fff'; this.style.boxShadow='0 4px 12px rgba(0, 0, 0, 0.05)'">
+              <div style="
+                padding: 1.5rem 1.5rem 1rem 1.5rem;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-size: 1rem;
+                color: {% if not alert.is_read %}#856404{% else %}#212529{% endif %};
+                font-weight: 600;
+                text-align: center;
+                min-height: 120px;
+              ">
+                {{ alert.message }}
+                <div>
+                  <small class="text-muted d-block mt-2">{{ alert.created_at|date:"M d, Y H:i" }}</small>
+                </div>
+              </div>
+              <div style="
+                padding: 0.75rem 1.5rem 1.25rem 1.5rem;
+                display: flex;
+                justify-content: center;
+                gap: 0.5rem;
+              ">
+                {% if alert.is_read %}
+                  <a href="{% url 'mark_alert_as_unread' alert.id %}" class="btn btn-outline-warning btn-sm"
+                     style="border-radius: 30px; min-width: 90px;">Mark as Unread</a>
+                {% else %}
+                  <a href="{% url 'mark_alert_as_read' alert.id %}" class="btn btn-outline-success btn-sm"
+                     style="border-radius: 30px; min-width: 90px;">Mark as Read</a>
+                {% endif %}
+                <a href="{% url 'delete_alert' alert.id %}" class="btn btn-outline-danger btn-sm"
+                   style="border-radius: 30px; min-width: 90px;">Delete</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <!-- No Alerts Message -->
+        <div class="col-12">
+          <div style="
+            border: 2px dashed #6c757d;
+            border-radius: 12px;
+            color: #6c757d;
+            font-style: italic;
+            padding: 2rem;
+            text-align: center;
+            font-size: 1.125rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+          ">
+            You have no alerts at the moment.
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
 {% endblock %}
+
+

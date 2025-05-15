@@ -1,34 +1,51 @@
 {% extends 'main.html' %}
+
 {% block content %}
-<div  style="padding: 80px;">
-<h2 style="padding: 20px;">Your Monthly Budgets</h2>
-<a href="{% url 'budget_create' %}" class="btn btn-success mb-3">Add New Budget</a>
-<table class="table table-bordered">
-  <thead>
-    <tr>
-      <th>Category</th>
-      <th>Amount</th>
-      <th>Month</th>
-      <th>Year</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for budget in budgets %}
+<div style="padding: 80px;">
+  <h2 style="padding: 20px;">Your Monthly Budgets</h2>
+  <a href="{% url 'budget_create' %}" class="btn btn-success mb-3">Add New Budget</a>
+
+  <table class="table table-bordered">
+    <thead>
       <tr>
-        <td>{{ budget.category.name }}</td>
-        <td>{{ budget.amount }}</td>
-        <td>{{ budget.month }}</td>
-        <td>{{ budget.year }}</td>
-        <td>
-          <a href="{% url 'budget_update' budget.pk %}" class="btn btn-sm btn-primary">Edit</a>
-          <a href="{% url 'budget_delete' budget.pk %}" class="btn btn-sm btn-danger">Delete</a>
-        </td>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Month</th>
+        <th>Year</th>
+        <th>Actions</th>
       </tr>
-    {% empty %}
-      <tr><td colspan="5">No budgets found.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      {% for budget in budgets %}
+        <tr>
+          <td>{{ budget.category.name }}</td>
+          <td>{{ budget.amount }}</td>
+          <td>
+            {% if budget.month == 1 %}January
+            {% elif budget.month == 2 %}February
+            {% elif budget.month == 3 %}March
+            {% elif budget.month == 4 %}April
+            {% elif budget.month == 5 %}May
+            {% elif budget.month == 6 %}June
+            {% elif budget.month == 7 %}July
+            {% elif budget.month == 8 %}August
+            {% elif budget.month == 9 %}September
+            {% elif budget.month == 10 %}October
+            {% elif budget.month == 11 %}November
+            {% elif budget.month == 12 %}December
+            {% else %}Unknown
+            {% endif %}
+          </td>
+          <td>{{ budget.year }}</td>
+          <td>
+            <a href="{% url 'budget_update' budget.pk %}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="{% url 'budget_delete' budget.pk %}" class="btn btn-sm btn-danger">Delete</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5">No budgets found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 {% endblock %}

@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>{% if pgTitle %} {{pgTitle}} {% else %} Mobile Show Room | Home {% endif %}</title>
+    <title>{% if pgTitle %} {{pgTitle}} {% else %} ExpenseTrackerApp | Home {% endif %}</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="{% if pgTitle %} {{pgTitle}} {% else %} Mobile Show Room | Home {% endif %}" name="keywords">
     <meta content="{% if pgTitle %} {{pgTitle}} {% else %} Mobile Show Room | Home {% endif %}" name="description">
@@ -166,24 +166,18 @@
           <div class="footer__widget">
             <h6 style="color: #000; font-weight: bold;">Quick Links</h6>
             <ul style="list-style: none; padding-left: 0;">
-              <li><a href="#" style="text-decoration: none; color: #04AA6D;">Home</a></li>
+              <li><a href="{% url 'home' %}" style="text-decoration: none; color: #04AA6D;">Home</a></li>
               <li><a href="{% url 'transaction_list' %}" style="text-decoration: none; color: #04AA6D;">Transactions</a></li>
               <li><a href="{% url 'budget_list' %}" style="text-decoration: none; color: #04AA6D;">Bugdets</a></li>
               <li><a href="{% url 'alerts' %}" style="text-decoration: none; color: #04AA6D;">Alerts</a></li>
-            </ul>
-          </div>
-        </div>
-  
-        <!-- Account Action -->
-        <div class="col-lg-3 col-md-3 mb-4 text-md-end">
-          <div class="footer__widget">
-            <form method="post" action="{% url 'logout' %}" style="display: inline;">
+              <form method="post" action="{% url 'logout' %}" style="display: inline;">
               {% csrf_token %}
               <button type="submit" style="
                 background-color: #04AA6D;
                 color: white;
                 border: none;
                 border-radius: 8px;
+                margin-top: 1.5rem;
                 padding: 10px 25px;
                 font-size: 16px;
                 font-weight: 500;
@@ -197,9 +191,71 @@
                 Logout
               </button>
             </form>
+            </ul>
           </div>
         </div>
-      </div>
+  
+        <!-- Account Action -->
+<div class="col-lg-3 col-md-3 mb-4 text-md-end">
+  <div class="footer__widget">
+    <ul style="list-style: none; padding-left: 0; margin: 0;">
+      <li style="margin: 8px 0;">
+        <a href="{% url 'charts' %}" style="
+          background-color: #007bff;
+          border: 1px solid #0056b3;
+          border-radius: 6px; 
+          padding: 8px 14px;
+          color: white; 
+          text-decoration: none; 
+          font-weight: 600; 
+          display: inline-block;
+          transition: background-color 0.3s, border-color 0.3s;
+          white-space: nowrap;
+        " 
+        onmouseover="this.style.backgroundColor='#0056b3'; this.style.borderColor='#004085';" 
+        onmouseout="this.style.backgroundColor='#007bff'; this.style.borderColor='#0056b3';">
+          <span style="margin-right: 6px;">📉</span> Expense Charts
+        </a>
+      </li>
+      <li style="margin: 8px 0;">
+        <a href="{% url 'export_csv' %}" style="
+          background-color: #007bff;
+          border: 1px solid #0056b3;
+          border-radius: 6px; 
+          padding: 8px 14px;
+          color: white; 
+          text-decoration: none; 
+          font-weight: 600; 
+          display: inline-block;
+          transition: background-color 0.3s, border-color 0.3s;
+          white-space: nowrap;
+        " 
+        onmouseover="this.style.backgroundColor='#0056b3'; this.style.borderColor='#004085';" 
+        onmouseout="this.style.backgroundColor='#007bff'; this.style.borderColor='#0056b3';">
+          <span style="margin-right: 6px;">📥</span> Export CSV File
+        </a>
+      </li>
+      <li style="margin: 8px 0;">
+        <a href="{% url 'summary_page' %}" style="
+          background-color: #007bff;
+          border: 1px solid #0056b3;
+          border-radius: 6px; 
+          padding: 8px 14px;
+          color: white; 
+          text-decoration: none; 
+          font-weight: 600; 
+          display: inline-block;
+          transition: background-color 0.3s, border-color 0.3s;
+          white-space: nowrap;
+        " 
+        onmouseover="this.style.backgroundColor='#0056b3'; this.style.borderColor='#004085';" 
+        onmouseout="this.style.backgroundColor='#007bff'; this.style.borderColor='#0056b3';">
+         <span style="margin-right: 6px;">📊</span> Financial Summary
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
   
       <!-- Bottom Copyright -->
       <div class="row mt-4">

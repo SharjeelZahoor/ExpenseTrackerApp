@@ -1,7 +1,41 @@
-{% load static %}
-<li class="{% if page == 'Dashboard' %}active{% endif %}"><a href="{% url 'home' %}">Dashboard</a></li>
-<li class="{% if page == 'Transactions' %}active{% endif %}"><a href="{% url 'transaction_list' %}">Transactions</a></li>
-<li class="{% if page == 'Categories' %}active{% endif %}"><a href="{% url 'category_list' %}">Categories</a></li>
-<li class="{% if page == 'Budgets' %}active{% endif %}"><a href="{% url 'budget_list' %}">Budgets</a></li>
-<li class="{% if page == 'Search' %}active{% endif %}"><a href="{% url 'search' %}">Search</a></li>
-<li class="{% if page == 'Alerts' %}active{% endif %}"><a href="{% url 'alerts' %}">Alerts</a></li>
+<ul style="
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+">
+  <li style="margin: 0 15px;">
+    <a href="{% url 'home' %}"
+       style="text-decoration: none; color: #333; padding: 10px; {% if page == 'Home' %}border-bottom: 3px solid #28a745; font-weight: bold;{% endif %}">
+      Dashboard
+    </a>
+  </li>
+  <li style="margin: 0 15px;">
+    <a href="{% url 'transaction_list' %}"
+       style="text-decoration: none; color: #333; padding: 10px; {% if page == 'Transactions' %}border-bottom: 3px solid #28a745; font-weight: bold;{% endif %}">
+      Transactions
+    </a>
+  </li>
+  <li style="margin: 0 15px;">
+    <a href="{% url 'category_list' %}"
+       style="text-decoration: none; color: #333; padding: 10px; {% if page == 'Categories' %}border-bottom: 3px solid #28a745; font-weight: bold;{% endif %}">
+      Categories
+    </a>
+  </li>
+  <li style="margin: 0 15px;">
+    <a href="{% url 'budget_list' %}"
+       style="text-decoration: none; color: #333; padding: 10px; {% if page == 'Budgets' %}border-bottom: 3px solid #28a745; font-weight: bold;{% endif %}">
+      Budgets
+    </a>
+  </li>
+  <li style="margin: 0 15px;">
+    <a href="{% url 'alerts' %}"
+       style="text-decoration: none; color: #333; padding: 10px; {% if page == 'Alerts' %}border-bottom: 3px solid #28a745; font-weight: bold;{% endif %}">
+      Alerts
+    </a>
+  </li>
+</ul>

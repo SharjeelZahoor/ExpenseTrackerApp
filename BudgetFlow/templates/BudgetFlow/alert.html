@@ -1,30 +1,73 @@
 {% extends 'main.html' %}
 
 {% block content %}
-  <div class="container mt-5">
-    <h2>My Alerts</h2>
+<!-- Alerts Grid -->
+<div class="container my-5">
+  <div class="row g-4">
     {% if alerts %}
-      <ul class="list-group mb-4">
-        {% for alert in alerts %}
-          <li class="list-group-item d-flex justify-content-between align-items-center 
-                      {% if not alert.is_read %}list-group-item-warning{% endif %}">
-            <div>
-              {{ alert.message }}<br>
-              <small class="text-muted">{{ alert.created_at|date:"M d, Y H:i" }}</small>
+      {% for alert in alerts %}
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+          <div style="
+            border: 2px solid {% if percent_used >= 100 %}#f5c6cb{% elif not alert.is_read %}#ffc107{% else %}#dee2e6{% endif %};
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            background-color: {% if percent_used >= 100 %}#f8d7da{% elif not alert.is_read %}#fff3cd{% else %}#ffffff{% endif %};
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+          " 
+          onmouseover="this.style.backgroundColor='{% if bp.percent_used >= 100 %}#f1b0b7{% elif not alert.is_read %}#ffeeba{% else %}#f8f9fa{% endif %}'; this.style.boxShadow='0 6px 16px rgba(0, 0, 0, 0.1)';" 
+          onmouseout="this.style.backgroundColor='{% if bp.percent_used >= 100 %}#f8d7da{% elif not alert.is_read %}#fff3cd{% else %}#ffffff{% endif %}'; this.style.boxShadow='0 4px 12px rgba(0, 0, 0, 0.05)';">
+            <div style="
+              padding: 1.5rem 1.5rem 1rem 1.5rem;
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              font-size: 1rem;
+              color: {% if percent_used >= 100 %}#a94442{% elif not alert.is_read %}#856404{% else %}#212529{% endif %};
+              font-weight: 600;
+              text-align: center;
+              min-height: 120px;
+            ">
+              {{ alert.message }}
+              <div>
+                <small class="text-muted d-block mt-2">{{ alert.created_at|date:"M d, Y H:i" }}</small>
+              </div>
             </div>
-            <div>
+            <div style="
+              padding: 0.75rem 1.5rem 1.25rem 1.5rem;
+              display: flex;
+              justify-content: center;
+              gap: 0.5rem;
+            ">
               {% if alert.is_read %}
-                <a href="{% url 'mark_alert_as_unread' alert.id %}" class="btn btn-sm btn-outline-warning me-1">Mark as Unread</a>
+                <a href="{% url 'mark_alert_as_unread' alert.id %}" class="btn btn-outline-warning btn-sm" style="border-radius: 30px; min-width: 90px;">Mark as Unread</a>
               {% else %}
-                <a href="{% url 'mark_alert_as_read' alert.id %}" class="btn btn-sm btn-outline-success me-1">Mark as Read</a>
+                <a href="{% url 'mark_alert_as_read' alert.id %}" class="btn btn-outline-success btn-sm" style="border-radius: 30px; min-width: 90px;">Mark as Read</a>
               {% endif %}
-              <a href="{% url 'delete_alert' alert.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+              <a href="{% url 'delete_alert' alert.id %}" class="btn btn-outline-danger btn-sm" style="border-radius: 30px; min-width: 90px;">Delete</a>
             </div>
-          </li>
-        {% endfor %}
-      </ul>
+          </div>
+        </div>
+      {% endfor %}
     {% else %}
-      <p class="text-muted">You have no alerts at the moment.</p>
+      <!-- No Alerts Message -->
+      <div class="col-12">
+        <div style="
+          border: 2px dashed #6c757d;
+          border-radius: 12px;
+          color: #6c757d;
+          font-style: italic;
+          padding: 2rem;
+          text-align: center;
+          font-size: 1.125rem;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          user-select: none;
+        ">
+          You have no alerts at the moment.
+        </div>
+      </div>
     {% endif %}
   </div>
+</div>
+
+
+
 {% endblock %}

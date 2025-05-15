@@ -1,10 +1,44 @@
 {% extends 'main.html' %}
 {% block content %}
-<h2>{{ title }}</h2>
-<form method="post">
+<h2 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #04AA6D; margin-bottom: 20px; text-align: center; margin-top: 50px;">{{ title }}</h2>
+<form method="post" style="max-width: 600px; margin: 0 auto; background: #f9f9f9; padding: 20px 25px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
   {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn btn-success">Save</button>
-  <a href="{% url 'transaction_list' %}" class="btn btn-secondary">Cancel</a>
+  <div style="margin-bottom: 15px;">
+    {{ form.as_p|safe }}
+  </div>
+  <div style="display: flex; gap: 15px; justify-content: flex-start; margin-top: 10px;">
+    <button type="submit" style="
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 28px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(40, 167, 69, 0.4);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    " 
+    onmouseover="this.style.backgroundColor='#218838'; this.style.boxShadow='0 6px 12px rgba(33, 136, 56, 0.5)';" 
+    onmouseout="this.style.backgroundColor='#28a745'; this.style.boxShadow='0 4px 6px rgba(40, 167, 69, 0.4)';"
+    >
+      Save
+    </button>
+    <a href="{% url 'transaction_list' %}" style="
+      background-color: #6c757d;
+      color: white;
+      padding: 12px 28px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      box-shadow: 0 4px 6px rgba(108, 117, 125, 0.4);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    "
+    onmouseover="this.style.backgroundColor='#5a6268'; this.style.boxShadow='0 6px 12px rgba(90, 98, 104, 0.5)';" 
+    onmouseout="this.style.backgroundColor='#6c757d'; this.style.boxShadow='0 4px 6px rgba(108, 117, 125, 0.4)';"
+    >
+      Cancel
+    </a>
+  </div>
 </form>
 {% endblock %}

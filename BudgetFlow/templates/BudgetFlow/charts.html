@@ -1,0 +1,88 @@
+{% extends 'main.html' %}
+{% block content %}
+  <h2 style="
+    color:rgb(1, 173, 9);
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 1.2px;
+    user-select: none;
+    ">
+   Expense Charts
+  </h2>
+
+<div style="display: flex; gap: 100px; flex-wrap: wrap; justify-content: center;">
+    <div>
+         <h4 style="
+    color: #333333;
+    padding: 10px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    user-select: none;
+  ">
+    Category-wise Spending
+  </h4>
+        <canvas id="categoryChart" width="300" height="300"></canvas>
+    </div>
+
+    <div>
+         <h4 style="
+    color: #333333;
+    padding: 10px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    user-select: none;
+  ">
+    Monthly Spending
+  </h4>
+        <canvas id="monthlyChart" width="200" height="300"></canvas>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    fetch("{% url 'chart_data' %}")
+    .then(response => response.json())
+    .then(data => {
+        // 🥧 Category Pie Chart
+        new Chart(document.getElementById('categoryChart'), {
+            type: 'pie',
+            data: {
+                labels: data.category.labels,
+                datasets: [{
+                    label: 'Category Spending',
+                    data: data.category.data,
+                    backgroundColor: ['#4CAF50', '#FF9800', '#2196F3', '#E91E63', '#9C27B0', '#FF5722']
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+            }
+        });
+
+        // 📊 Monthly Bar Chart
+        new Chart(document.getElementById('monthlyChart'), {
+            type: 'bar',
+            data: {
+                labels: data.monthly.labels,
+                datasets: [{
+                    label: 'Monthly Spending',
+                    data: data.monthly.data,
+                    backgroundColor: '#3F51B5'
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

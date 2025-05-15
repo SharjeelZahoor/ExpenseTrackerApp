@@ -2,6 +2,10 @@ from django.urls import path
 from . import views
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from django.urls import path
+from .views import chart_data
+from django.contrib.auth.decorators import login_required
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('', views.home, name="home"),
@@ -9,13 +13,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.login, name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
-    # Expense Management
-    path('add-expense/', views.add_expense, name="add-expense"),
-    path('edit-expense/<int:pk>/', views.edit_expense, name="edit-expense"),
-    path('delete-expense/<int:pk>/', views.delete_expense, name="delete-expense"),
-    path('expenses/', views.expense_list, name="expenses"),
-    path('budgets/', views.budget_list, name='budgets'),
-
+    
     # Category Management
     path('categories/', views.category_list, name='category_list'),
     path('categories/create/', views.category_create, name='category_create'),
@@ -40,10 +38,20 @@ urlpatterns = [
     path('alerts/unread/<int:id>/', views.mark_as_unread, name='mark_alert_as_unread'),
     path('alerts/delete/<int:id>/', views.delete_alert, name='delete_alert'),
 
+    # ✅ Chart-related URLs
+    path('charts/', login_required(TemplateView.as_view(template_name="BudgetFlow/charts.html")), name='charts'),
+    path('charts/data/', chart_data, name='chart_data'),
+
+    # ✅ NEW Financial Summary & CSV Export
+    path('summary/', views.summary_page, name='summary_page'),  # <- This is the fix
+    path('api/summary/', views.financial_summary, name='financial_summary'),
+    path('export/csv/', views.export_csv, name='export_csv'),
+    
     # Reports & Filtering
     path('search/', views.search_expenses, name="search"),
     path('report/', views.report, name="report"),
 
     # Profile
     path('profile/', views.profile, name="profile"),
+
 ]

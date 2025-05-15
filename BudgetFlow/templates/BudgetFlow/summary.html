@@ -1,0 +1,82 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<h2 style="text-align: center; margin: 40px;">📄 Financial Summary</h2>
+
+<form id="summaryForm" style="max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #dee2e6; border-radius: 8px; background-color: #f8f9fa;">
+    <div style="margin-bottom: 15px;">
+        <label for="month" style="font-weight: bold;">Month:</label>
+        <select id="month" name="month" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ced4da;">
+            <option value="">All</option>
+            {% for m in months_range %}
+                <option value="{{ m }}">{{ m }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label for="year" style="font-weight: bold;">Year:</label>
+        <input type="number" id="year" name="year" value="2025" min="2000" max="2100" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ced4da;">
+    </div>
+
+    <button type="submit" style="width: 100%; padding: 10px; border-radius: 4px; border: none; background-color: #28a745; color: white; font-weight: bold; cursor: pointer;">
+        Fetch Summary
+    </button>
+</form>
+
+<div id="summaryResult" style="max-width: 800px; margin: 30px auto; padding: 20px; border: 1px solid #dee2e6; border-radius: 8px; background-color: #ffffff; display: none;"></div>
+
+<script>
+document.getElementById('summaryForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const month = document.getElementById('month').value;
+    const year = document.getElementById('year').value;
+
+    fetch(`/api/summary/?month=${month}&year=${year}`)
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(data => {
+            const result = document.getElementById('summaryResult');
+            result.style.display = 'block';
+            result.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h3 style="color: #343a40;">Summary for ${data.month || 'All Months'} ${data.year}</h3>
+                </div>
+
+                <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px; text-align: center;">
+                    <div style="flex: 1 1 200px; background: #e3fcec; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <h4 style="color: #28a745;">Income</h4>
+                        <p style="font-size: 18px; font-weight: bold;">${data.total_income}</p>
+                    </div>
+                    <div style="flex: 1 1 200px; background: #ffe3e3; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <h4 style="color: #dc3545;">Expense</h4>
+                        <p style="font-size: 18px; font-weight: bold;">${data.total_expense}</p>
+                    </div>
+                    <div style="flex: 1 1 200px; background: #e7f1ff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <h4 style="color: #007bff;">Balance</h4>
+                        <p style="font-size: 18px; font-weight: bold;">${data.balance}</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <h5 style="text-align: center; color: #343a40;">Top Categories</h5>
+                    <ul style="list-style-type: none; padding: 0; margin-top: 15px;">
+                        ${Object.entries(data.top_categories).map(([name, amount]) => `
+                            <li style="padding: 10px; border-bottom: 1px solid #dee2e6; text-align: center;">
+                                <strong>${name}</strong>: ${amount}
+                            </li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        })
+        .catch(error => {
+            const result = document.getElementById('summaryResult');
+            result.style.display = 'block';
+            result.innerHTML = `<p style="color: red; text-align: center;">Error: ${error.message}</p>`;
+        });
+});
+</script>
+
+{% endblock %}

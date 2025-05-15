@@ -9,12 +9,13 @@ from .forms import TransactionForm, EditTransactionForm, CategoryForm, BudgetFor
 from .models import Transaction, Category, Budget, Alert
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import get_object_or_404, redirect
-
+from django.http import JsonResponse
+from .models import Transaction  # Or whatever your model is
+from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Sum
+import calendar
 
 title = 'ExpenseTrackerProject'
-
-
-
 #home view
 @login_required(login_url='login')
 def home(request):
@@ -26,14 +27,20 @@ def home(request):
     # Transactions
     full_transactions = Transaction.objects.filter(user=user).order_by('-date')
     transactions = full_transactions[:10]
+    today = date.today()
+    monthly_transactions = full_transactions.filter(date__month=today.month, date__year=today.year)
 
-    total_income = full_transactions.filter(type='Income').aggregate(Sum('amount'))['amount__sum'] or 0
-    total_expense = full_transactions.filter(type='Expense').aggregate(Sum('amount'))['amount__sum'] or 0
+    total_income = monthly_transactions.filter(type='Income').aggregate(Sum('amount'))['amount__sum'] or 0
+    total_expense = monthly_transactions.filter(type='Expense').aggregate(Sum('amount'))['amount__sum'] or 0
+
     balance = total_income - total_expense
 
-    # All Budgets
+    # All Budgets (define this first)
     budgets = Budget.objects.filter(user=user)
 
+    # Then filter for current month
+    today = date.today()
+    current_month_budgets = budgets.filter(month=today.month, year=today.year)
     # Current Month & Year
     today = date.today()
     current_month_budgets = budgets.filter(month=today.month, year=today.year)
@@ -79,7 +86,7 @@ def home(request):
         'income': total_income,
         'expense': total_expense,
         'balance': balance,
-        'budgets': budgets,
+        'budgets': current_month_budgets,
         'budget_progress': budget_progress,
         'alerts': alerts,
     }
@@ -138,59 +145,11 @@ def logout(request):
     return redirect('login')
 
 
-# Expense List
-@login_required
-def expense_list(request):
-    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
-    return render(request, 'BudgetFlow/expense_list.html', {'transactions': transactions})
-
-
-# Add Expense
-@login_required
-def add_expense(request):
-    if request.method == 'POST':
-        form = TransactionForm(request.POST)
-        if form.is_valid():
-            expense = form.save(commit=False)
-            expense.user = request.user
-            expense.save()
-            messages.success(request, 'Expense added successfully.')
-            return redirect('expenses')
-    else:
-        form = TransactionForm()
-    return render(request, 'BudgetFlow/add_expense.html', {'form': form})
-
-
-# Edit Expense
-@login_required
-def edit_expense(request, pk):
-    transaction = get_object_or_404(Transaction, pk=pk, user=request.user)
-    if request.method == 'POST':
-        form = TransactionForm(request.POST, instance=transaction)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Expense updated successfully.')
-            return redirect('expenses')
-    else:
-        form = TransactionForm(instance=transaction)
-    return render(request, 'BudgetFlow/edit_expense.html', {'form': form})
-
-
-# Delete Expense
-@login_required
-def delete_expense(request, pk):
-    transaction = get_object_or_404(Transaction, pk=pk, user=request.user)
-    transaction.delete()
-    messages.success(request, 'Expense deleted successfully.')
-    return redirect('expenses')
-
-
-
 # ✅ List all categories
 @login_required
 def category_list(request):
     categories = Category.objects.all()
-    return render(request, 'BudgetFlow/category_list.html', {'categories': categories})
+    return render(request, 'BudgetFlow/category_list.html', {'categories': categories, 'page': 'Categories'})
 
 # ✅ Create a new category
 @login_required
@@ -328,6 +287,7 @@ def transaction_list(request):
         'date_to': date_to,
         'amount_min': amount_min,
         'amount_max': amount_max,
+        'page': 'Transactions',
     }
 
     return render(request, 'BudgetFlow/transaction_list.html', context)
@@ -385,7 +345,7 @@ def profile(request):
 @login_required
 def budget_list(request):
     budgets = Budget.objects.filter(user=request.user).order_by('-year', '-month')
-    return render(request, 'BudgetFlow/budget_list.html', {'budgets': budgets})
+    return render(request, 'BudgetFlow/budget_list.html', {'budgets': budgets, 'page': 'Budgets'})
 
 # ✅ Create a new budget
 @login_required
@@ -428,13 +388,35 @@ def budget_delete(request, pk):
 
 
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from BudgetFlow.models import Alert
+from django.db.models import Count
 
- #  Alert views
+# Alert Views
 @login_required
 def alerts_view(request):
-    # Get alerts for the logged-in user
+    # Step 1: Find and remove duplicate alerts for the logged-in user
+    duplicates = (
+        Alert.objects.filter(user=request.user)
+        .values('user', 'message')
+        .annotate(msg_count=Count('id'))
+        .filter(msg_count__gt=1)
+    )
+    
+    # Step 2: Delete older duplicates, keep the latest one
+    for entry in duplicates:
+        user = entry['user']
+        message = entry['message']
+        alerts = Alert.objects.filter(user=user, message=message).order_by('-created_at')
+        # Keep the latest alert, delete the rest
+        for alert in alerts[1:]:
+            print(f"Deleting duplicate alert: {alert.id} - {alert.message}")
+            alert.delete()
+
+    # Get alerts for the logged-in user after cleaning up duplicates
     alerts = Alert.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'BudgetFlow/alert.html', {'alerts': alerts})
+    return render(request, 'BudgetFlow/alert.html', {'alerts': alerts, 'page': 'Alerts'})
 
 
 @login_required
@@ -455,4 +437,114 @@ def mark_as_unread(request, id):
 def delete_alert(request, id):
     alert = get_object_or_404(Alert, id=id)
     alert.delete()
-    return redirect('alerts')  # Re
+    return redirect('alerts')  # Redirect back to the alerts page
+
+# charts
+from django.http import JsonResponse
+from django.db.models import Sum
+from django.contrib.auth.decorators import login_required
+from django.db.models.functions import TruncMonth
+import calendar
+
+@login_required
+def chart_data(request):
+    user = request.user
+
+    # 1️⃣ Category-wise expense data
+    category_data = (
+        Transaction.objects.filter(user=user, type='Expense')
+        .values('category__name')
+        .annotate(total=Sum('amount'))
+        .order_by('-total')
+    )
+
+    # 2️⃣ Monthly expense data
+    monthly_data = (
+        Transaction.objects.filter(user=user, type='Expense')
+        .annotate(month=TruncMonth('date'))
+        .values('month')
+        .annotate(total=Sum('amount'))
+        .order_by('month')
+    )
+
+    # Format for frontend
+    category_labels = [item['category__name'] for item in category_data]
+    category_totals = [float(item['total']) for item in category_data]
+
+    month_labels = [item['month'].strftime('%b %Y') for item in monthly_data]
+    month_totals = [float(item['total']) for item in monthly_data]
+
+    return JsonResponse({
+        'category': {
+            'labels': category_labels,
+            'data': category_totals,
+        },
+        'monthly': {
+            'labels': month_labels,
+            'data': month_totals,
+        }
+    })
+
+@login_required
+def summary_page(request):
+    months_range = list(calendar.month_name)[1:13]  # ['January', ..., 'December']
+    return render(request, 'BudgetFlow/summary.html', {'months_range': months_range})
+
+
+@login_required
+@csrf_exempt
+def financial_summary(request):
+    month = request.GET.get('month')
+    year = request.GET.get('year')
+
+    user = request.user
+    queryset = Transaction.objects.filter(user=user)  # ✅ Filter by logged-in user
+
+    if year:
+        queryset = queryset.filter(date__year=year)
+    if month:
+        try:
+            month_number = list(calendar.month_name).index(month)
+            queryset = queryset.filter(date__month=month_number)
+        except ValueError:
+            return JsonResponse({'error': 'Invalid month provided'}, status=400)
+
+    total_income = queryset.filter(type__iexact='income').aggregate(Sum('amount'))['amount__sum'] or 0
+    total_expense = queryset.filter(type__iexact='expense').aggregate(Sum('amount'))['amount__sum'] or 0
+    balance = total_income - total_expense
+
+    top_categories = queryset.values('category__name').annotate(total=Sum('amount')).order_by('-total')[:5]
+    top_data = {item['category__name']: item['total'] for item in top_categories}
+
+    return JsonResponse({
+        'month': month,
+        'year': year,
+        'total_income': total_income,
+        'total_expense': total_expense,
+        'balance': balance,
+        'top_categories': top_data
+    })
+
+
+import csv
+from django.http import HttpResponse
+from .models import Transaction
+
+def export_csv(request):
+    transactions = Transaction.objects.filter(user=request.user)
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=transactions.csv'
+    
+    writer = csv.writer(response)
+    writer.writerow(['Date', 'Category', 'Amount', 'Type', 'Description'])  # Updated column name
+    
+    for tx in transactions:
+        writer.writerow([
+            tx.date,
+            tx.category.name if tx.category else "Uncategorized",
+            tx.amount,
+            tx.type,
+            tx.description or ""  # ✅ Use 'description' instead of 'note'
+        ])
+    
+    return response
