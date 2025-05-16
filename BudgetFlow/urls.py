@@ -8,7 +8,9 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 
 urlpatterns = [
+    # Home 
     path('', views.home, name="home"),
+
     # User Authentication
     path('register/', views.register, name='register'),
     path('login/', views.login, name='login'),
@@ -43,15 +45,9 @@ urlpatterns = [
     path('charts/data/', chart_data, name='chart_data'),
 
     # ✅ NEW Financial Summary & CSV Export
-    path('summary/', views.summary_page, name='summary_page'),  # <- This is the fix
+    path('summary/', views.summary_page, name='summary_page'), 
     path('api/summary/', views.financial_summary, name='financial_summary'),
     path('export/csv/', views.export_csv, name='export_csv'),
     
-    # Reports & Filtering
-    path('search/', views.search_expenses, name="search"),
-    path('report/', views.report, name="report"),
-
-    # Profile
-    path('profile/', views.profile, name="profile"),
 
 ]

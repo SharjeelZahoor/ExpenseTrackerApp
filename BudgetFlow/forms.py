@@ -46,11 +46,7 @@ class CategoryForm(ModelForm):
         model = Category
         fields = ['name']
 
-# ✅ Profile Update Form (for user self-edit)
-class ProfileForm(ModelForm):
-    class Meta:
-        model = User
-        fields = ['username', 'email']
+
 
 
 # ✅ Admin User Form (Admin can manage users)
